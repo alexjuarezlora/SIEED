@@ -1,5 +1,14 @@
 <?php
 
+if (!isset($_SESSION)) { //NOS PERMITE LLEVAR LA SESION A LAS PAGINAS :3
+    session_start(); 
+}
+
+//echo "<script language='javascript'>"; //porque no imprime otra cosa?
+//echo "alert(".$_SESSION['NO_TEC'].");"; //LLEVAMOS EL ID DEL TEC PARA PODER HACER LOS REGISTROS EN ALUMNO
+//echo "</script>";
+
+//PARA PODER HACER LOS REGISTROS EN ALUMNO SE NECESITAN LAS LLAVES FRANEAS DE TEC Y CARRERA
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -134,16 +143,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <!-- ################################################################################################ -->
     <ul>
     Bienvenido 
-        <?php 
-        if (!empty($_SESSION["nombre_usuario"])) 
-        {
-            echo $_SESSION["nombre_usuario"];
-            echo "<a href='#comments'>&nbsp;&nbsp;&nbsp;&nbsp;Cerrar Sesión</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-        }else {
-          echo "Invitado(a) <a href='#comments'>&nbsp;&nbsp;&nbsp;&nbsp;Iniciar Sesión</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-        }
-        
-        ?>  
+       <?php
+            if (!empty($_SESSION['nombre'])) {
+                echo $_SESSION["nombre"];
+                echo "<a href='../pages/cerrarSesion.php'>&nbsp;&nbsp;&nbsp;&nbsp;Cerrar Sesión</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            } else {
+                echo "Invitado(a) <a href='#comments'>&nbsp;&nbsp;&nbsp;&nbsp;Iniciar Sesión</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            }
+
+            ?>
         
       <li><a href="#">Inicio</a></li>
       <li><a href="#">Eventos Deportivos</a></li>
@@ -237,6 +245,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 	        if(isset($_GET['temp'])){
 	        	echo "<p><strong>Vista Previa</strong></p><br>";
 	        	echo "<img src=".$_GET['temp'].">";
+                        $imagen=$_GET['temp'];
 	        }
 	        }
 	      ?>
@@ -257,7 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 		<h6 class="heading"><a href="#">Datos personales</a></h6> 
 		<p>Escriba los datos del alumno(a)</p> 
 		<div id="comments">
-		<form name="registro" action="guardardatos.php" method="POST" onsubmit="return validateFoto()" >
+                    <form name="registro" action="../pages/insertar_alum.php" method="POST" onsubmit="return validateFoto()" >
 			
 			<label for="nombre">Nombre(s)<span>*</span></label> 
       <input type="text" name="nombre" id="nombre" value="" pattern="^([a-zA-Z ñáéíóúÑÁÉÍÓÚ]{2,60})$"
@@ -279,21 +288,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         <label for="apellido_m">Apellido Materno<span>*</span></label> 
         <input type="text" name="apellido_m" id="apellido_m" value="" pattern="^([a-zA-Z ñáéíóúÑÁÉÍÓÚ]{2,60})$"
               title="Revisa este campo. O esta vacío o tiene caractéres raros" size="22" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" required>
+        
+        
         <label for="disciplina">Disciplina<span>*</span></label>
-        <select required name="disciplina">
-          <option value="">---Seleccionar---</option>
-          <option value="Básquetbol">Básquetbol</option>
-          <option value="Béisbol">Béisbol</option>
-          <option value="Voleibol de playa">Voleibol de playa</option>
-          <option value="Voleibol">Voleibol</option>
-          <option value="Ajedrez">Ajedrez</option>
-          <option value="Atletismo">Atletismo</option>
-          <option value="Natación">Natación</option>
-          <option value="Tennis">Tennis</option>
-        </select> 
-        <bR><br>
+        <?php
+        include_once("../pages/conexion.php");
+        $conexion = new Conexion();
+        $link = $conexion->conexionBd($_SESSION['usuario'],$_SESSION['password']);
+        mysql_query("SET NAMES 'utf8'");
+        if ($link)
+         {
+             $result = mysql_query("select ID_DISC,DISC_NOMBR,DISC_RAMA,TIPO from disc WHERE DISC_RAMA='V'", $link);
+             echo  "<select required name='disciplina'>";
+             echo  "<option value=''>---Seleccionar---</option>";
+             while ($row = mysql_fetch_row($result))
+             {
+              echo "<option value=".$row[0].">".$row[1]."</option>";
+      
+             }
+             echo "</select><br>";
+             
+         }     
+        
+        ?>
       </div>
-      <div class="one_half first">
+  <!--    <div class="one_half first">
         <label for="grado_estudios">Grado de estudios<span>*</span></label>
         <select required name="grado_estudios">
   				<option value="">---Seleccionar---</option>
@@ -301,13 +320,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
   				<option value="Maestría">Maestria</option>
   				<option value="Doctorado">Doctorado</option>
   			</select> 
-      </div>
+      </div> -->
       <div class="one_half">
         <label for="tipo_sangre">Tipo de Sangre<Span>*</Span></label>
         <select required name="tipo_sangre">
           <option value="">-----Seleccionar-----</option>
           <option value="AB+">AB+</option>
-          <option value="AB-+">AB-</option>
+          <option value="AB-">AB-</option>
           <option value="A+">A+</option>
           <option value="A-">A-</option>
           <option value="B+">B+</option>
@@ -318,52 +337,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
       </div>
 
 
-      <label for="carrera">Carrera<span>*</span></label>
-			<select required name="carrera">
-				<option value="">---Seleccione una Carrera------</option>
-				<option value="Ingeniería en Acuicultura">Ingeniería en Acuicultura</option>
-				<option value="Ingeniería Aeronáutica">Ingeniería Aeronáutica</option>
-				<option value="Ingeniería en Administracion">Ingeniería en Administracion</option>
-				<option value="Ingeniería en Agronomía">Ingeniería en Agronomía</option>
-				<option value="Ingeniería Ambiental">Ingeniería Ambiental</option>
-				<option value="Ingeniería Biomédica">Ingeniería Biomédica</option>
-				<option value="Ingeniería Bioquímica">Ingeniería Bioquímica</option>
-				<option value="Ingeniería Civil<">Ingeniería Civil</option>
-				<option value="Ingeniería en Desarrollo Comunitario">Ingeniería en Desarrollo Comunitario</option>
-				<option value="Ingeniería Eléctrica">Ingeniería Eléctrica</option>
-				<option value="Ingeniería Electromecánica">Ingeniería Electromecánica</option>
-				<option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
-				<option value="Ingeniería en Energías Renovables">Ingeniería en Energías Renovables</option>
-				<option value="Ingeniería Forestal">Ingeniería Forestal</option>
-				<option value="Ingeniería en Geociencias">Ingeniería en Geociencias</option>
-				<option value="Ingeniería en Gestión Empresarial">Ingeniería en Gestión Empresarial</option>
-				<option value="Ingeniería Hidrológica">Ingeniería Hidrológica</option>
-				<option value="Ingeniería Industrial">Ingeniería Industrial</option>
-				<option value="Ingeniería en Industrias Alimentarias">Ingeniería en Industrias Alimentarias</option>
-				<option value="Ingeniería Informática">Ingeniería Informática</option>
-				<option value="Ingeniería en Innovación Agrícola Sustentable">Ingeniería en Innovación Agrícola Sustentable</option>
-				<option value="Ingeniería en Logística">Ingeniería en Logística</option>
-				<option value="Ingeniería en Materiales">Ingeniería en Materiales</option>
-				<option value="Ingeniería Mecánica">Ingeniería Mecánica</option>
-				<option value="Ingeniería Mecatrónica">Ingeniería Mecatrónica</option>
-				<option value="Ingeniería en Minería">Ingeniería en Minería</option>
-				<option value="Ingeniería en Nanotecnología">Ingeniería en Nanotecnología</option>
-				<option value="Ingeniería Naval">Ingeniería Naval</option>
-				<option value="Ingeniería en Pesquerías">Ingeniería en Pesquerías</option>
-				<option value="Ingeniería Petrolera">Ingeniería Petrolera</option>
-				<option value="Ingeniería Química">Ingeniería Química</option>
-				<option value="Ingeniería en Sistemas Automotrices">Ingeniería en Sistemas Automotrices</option>
-				<option value="Ingeniería en Sistemas Computacionales">Ingeniería en Sistemas Computacionales</option>
-				<option value="Ingeniería en Tecnologías de la Información y Comunicaciones">Ingeniería en Tecnologías de la Información y Comunicaciones</option>
-				<option value="Ingeniería en Animación Digital y Efectos Visuales">Ingeniería en Animación Digital y Efectos Visuales</option>
-				<option value="Arquitectura">Arquitectura</option>
-				<option value="Contador Público">Contador Público</option>
-				<option value="Gastronomía">Gastronomía</option>
-				<option value="Licenciatura en Administración">Licenciatura en Administración</option>
-				<option value="Licenciatura en Biología">Licenciatura en Biología</option>
-				<option value="Licenciatura en Turismo">Licenciatura en Turismo</option>
-			</select><br>
-
+      <label for="carrera">Carrera<span>*</span></label> 
+      <?php
+        include_once("../pages/conexion.php");
+        $conexion = new Conexion();
+        $link = $conexion->conexionBd($_SESSION['usuario'],$_SESSION['password']);
+        mysql_query("SET NAMES 'utf8'");
+         if ($link)
+         {
+            $result = mysql_query("SELECT idCARRERA,CARR_NOMBR FROM carrera", $link);
+            echo "<select required name='carrera'>";
+            echo "<option value=''>---Seleccione una Carrera------</option>";
+             while ($row = mysql_fetch_row($result))
+             {
+              echo "<option value=".$row[0].">".$row[1]."</option>";
+      
+             }
+             echo "</select><br>";
+         }
+        ?>
 			<div class="one_third first">
 				<label for="n_control">Numero de Control <span>*</span></label>
 	       <input type="text" name="n_control" id="n_control" value="" pattern="^([0-9A-Z]{8}||[0-9A-Z]{9})$" title="A nivel licenciatura, un número de control tiene 8 caractes, Maestria, Doctorado o Posgrado, 9" size="22" required>
@@ -393,8 +385,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 			<label for="sexo">Sexo<span>*</span></label>
 			<select required name="sexo">
 				<option value="">---Seleccionar---</option>
-				<option value="Hombre">Hombre</option>
-				<option value="Mujer">Mujer</option>
+				<option value="M">Hombre</option>
+				<option value="F">Mujer</option>
 			</select>
 			</div>
       <div class="one_third first">
@@ -413,7 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         <input type="number" name="estatura" id="estatura" value="" min=1 max=3 step=0.01 placeholder="Ej: 1.50"
                 title="Si midieras un metro y medio, escribe 1.50" size="22" required>
       </div><br><br><br>
-      <label for="padecimiento" align="left">Alergias o padecimientos</label>
+      <label for="padecimiento" align="left">Padecimientos</label>
       <textarea name="padecimiento" id="padecimiento" cols="10" rows="5" placeholder="Si no tuviese ninguno, favor de ignorar" value="ninguno" ></textarea>
       <br>
 				<!--El siguiente hidden incluye la ruta temporal de la foto recortada, para ya almacenarla en la BD, Insertar PHP en value-->
@@ -423,8 +415,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 				}else{
 					echo "<input type='hidden' id='foto_ruta' name='foto_ruta' value=''>";
 				}
-				?> 
-        <input type="submit" value="Guardar datos" > 
+				?>
+                                
+      <label for="alergia" align="left">Alergias</label>
+      <textarea name="alergia" id="alergia" cols="10" rows="5" placeholder="Si no tuviese ninguno, favor de ignorar" value="ninguno" ></textarea>
+      <br>
+	
+      
+        <input type="submit" value="Guardar Datos" action="../insertar_alum.php" > 
         <input name="reset" type="reset" value="Limpiar datos">
 		   
 	        </form> 

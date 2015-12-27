@@ -27,15 +27,16 @@ if (isset($_POST["name"]))
 <title>SIEED</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link href="layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
-<link rel="stylesheet" type="text/css" href="layout/styles/fonts/deportes/flaticon.css"> 
+<link href="../layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
+<link rel="stylesheet" type="text/css" href="../layout/styles/fonts/deportes/flaticon.css"> 
+
 </head>
 <body id="top">
 <!-- ################################################################################################ -->
 
 <!--Menu-->
 <div class="wrapper row1">
-<img src="images/banner.png" >
+<img src="../images/banner.png" >
   <header id="header" class="clear"> 
     <!-- ################################################################################################ -->
     <div id="logo" class="fl_left">
@@ -79,51 +80,7 @@ if (isset($_POST["name"]))
   </div>
 </div>
 
-<!--Slider-->
-    <div class="flexslider basicslider">
-      <ul class="slides">
-        <li><img src="images/demo/slides/01.png" alt="">
-          <div class="txtoverlay">
-            <div class="centralise">
-              <div class="verticalwrap">
-                <article>
-                  <h2 class="heading ">Listado de Natacion para el LIX Evento Nacional Deportivo</h2>
-                  <p><a class="btn orange pushright" href="#">Ver</a> </p>
-                </article>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li><img src="images/demo/slides/02.png" alt="">
-          <div class="txtoverlay">
-            <div class="centralise">
-              <div class="verticalwrap">
-                <article>
-                  <h2 class="heading ">Listado de Atletismo pra el LIX Evento Nacional Deportivo</h2>
-                  <p><a class="btn red" href="#">Ver</a></p>
-                </article>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li><img src="images/demo/slides/03.png" alt="">
-          <div class="txtoverlay">
-            <div class="centralise">
-              <div class="verticalwrap">
-                <article>
-                  <h2 class="heading">Oficio Circular 004 Aportacion LIX END </h2>
-                  <p><a class="btn green" href="#">Ver</a></p>
 
-                </article>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-   
-  </div>
-</div>
 <!-- Cuerpo de la página-->
 
 <div class="wrapper row3">
@@ -131,110 +88,80 @@ if (isset($_POST["name"]))
     <!-- main body -->
     <!-- ################################################################################################ -->
     <div class="sidebar one_quarter first"> 
-
-
-      <!-- #############Verifica Usuario###############3333 -->
-      <?php
-      include_once("pages/menu.php");
+      <!-- ################################################################################################ -->   
+        
+        <?php
+      include_once("../pages/menu.php");
       $menu = new Menu();
-      $menu->usuarioVisitante();
+      $direccion ="../pdfs/";
+      $menu->usuarioVisitante($direccion);
       $menu->verificaUsuario();
 
       ?>
 
-
      
     </div>
     
-    <div class="content two_quarter"> 
+    <div class="content three_quarter"> 
     
     <ul class="nospace group">
 
           <li class="btmspace-50">
-            <article class="service largeicon"><i class="icon nobg circle fa fa-check-circle-o"></i>
-              <h6 class="heading"><a href="#">SIEED</a></h6>
-              <p>Sistema de Inscripción Electrónica para los Eventos Deportivos </p>
-            </article>
-          </li>
-
-          <li class="btmspace-50">
-            <article class="service largeicon"><i class="icon nobg circle fa fa-futbol-o"></i>
-              <h6 class="heading"><a href="#">Dirección de Promoción Culturar y Deportiva </a></h6>
-              <p>Una subdirección de Tecnológicos de México, Encargados de la realización de los eventos deportivos.</p>
-            </article>
-          </li>
-          <li>
-            <article class="service largeicon"><i class="icon nobg circle fa fa-user-plus"></i>
-              <h6 class="heading"><a href="#">Registro de alumnos para eventos deportivos</a></h6>
-              <p>Aquí podrás registrar a los estudiantes de tu escuela</p>
-            </article>
+            <article class="service largeicon"><i class="icon nobg circle fa fa-university"></i>
+              <h6 class="heading"><a href="#">Perfil del <strong>Instituto tecnológico de Pachuca</strong></a></h6>
+              <div id="comments"> 
+                <div class="one_half first">
+                  
+                  <?php  
+                  include_once("../pages/datos_tec.php");
+                  $datos=new Consulta_datos();  //metodo de consulta de datos
+                  $d=$datos->ret_dat();
+                  
+                  echo "<p>Usuario: <strong>".$_SESSION['usuario']."</strong></p>";
+                  if($d[0]=='F')
+                    {
+                       echo "<p>Tipo de tecnológico: <strong>FEDERAL</strong>";
+                    }
+                    else 
+                    {
+                       echo "<p>Tipo de tecnológico: <strong>SUPERIOR</strong>";
+                    }
+                  
+                  echo "<p>Zona: <strong>".$d[1]."</strong><p><br>";
+                      
+                      
+                  echo "<form method='POST' action='#' id='cambio_datos'>";
+                  echo "<label>Email<span>*</span></label>";
+                  echo "<input type='text' value=".$d[2].">";
+                  echo "<label>Teléfono<span>*</span></label>";
+                  echo "<input type='text' value=".$d[3].">";
+                  echo "<label>Calle<span>*</span></label>";
+                  echo "<input type='text' value=".$d[4].">";
+                  echo "<label>Colonia<span>*</span></label>";
+                  echo "<input type='text' value=".$d[5].">";
+                  echo "<label>Numero Exterior<span>*</span></label>";
+                  echo "<input type='text' value=".$d[6].">";
+                  ?>
+                  <br>
+                  <input type="submit" value="Actualizar datos">
+                  </form>
+                </div>
+                <div class="one_half">
+                <p><strong>Logo del tecnológico</strong><p>
+                  <img class="imgr borderedbox inspace-5" src="../images/SIEED.PNG">
+                  <div id="comments"> 
+                  <form method="POST" action="#" id="cambio_logo">
+                    <input type="file" name="n_logo" accept=".jpg,.png" required><br>
+                    <input type="submit" value="Cambiar Logo">
+                  </form>
+                  <br><br><br><br>
+                </div>
+              </div>
+              <a href="autoridades.php">Haz clic aqui para modificar la lista de autoridades</a>
+           </article>
           </li>
         </ul>
-        <!-- Logos de las disciplinas
-       <span class="flaticon-running1"></span>
-       <span class="flaticon-basketball1"></span>
-       <span class="flaticon-chesspiece1"></span>
-       <span class="flaticon-game101"></span>
-       <span class="flaticon-silhouette66"></span><br><br><br>      
-       <span class="flaticon-sportsball19"></span>
-       <span class="flaticon-tennis3"></span>
-       <span class="flaticon-boy3"></span>
-       <span class="flaticon-women13"></span>-->
-
-    
-        
     </div>
-     <div class='one_quarter'>
-    <?php
-            if (!empty($_SESSION["nombre_usuario"])) 
-            {
-                if($_SESSION["nombre_usuario"]=="tec")
-                {
-                  echo "
-                  <h1>Instituto Tecnológico de Pachuca</h1>
-                  <img class='imgr borderedbox inspace-5' src='images/SIEED.png' alt='' >
-                  <p>Carretera Mexico Pachuca KM 87.5. CP: 42080 Col Venta Prieta, Pachuca Hidalgo</p>
-                  <p>Email: tecpachuca@edu.com</p>
-                  </div>";
-                    
-                }
-                if($_SESSION["nombre_usuario"]=="admin")
-                {
-                  echo "
-                  <h1>Enrique (administrador)</h1>
-                  <img class='imgr borderedbox inspace-5' src='images/enrique.gif' alt='' >
-                  <p>Carretera Mexico Pachuca KM 87.5. CP: 42080 Col Venta Prieta, Pachuca Hidalgo</p>
-                  <p>Email: admin@edu.com</p>
-                  </div>";
-                }
-            }else{
-                  echo "
-                <div id='comments'>
-                <h6>Inicio de Sesión</h6>
-                <form action='#'' method='post'> 
-                <label for='name'>Nombre<span>*</span></label> 
-                <input type='text' name='name' id='name' value='' size='22'>
-                <label for='pass'>Contraseña<span>*</span></label>
-                <input type='password' name='pass' id='pass' value='' size='22'>
-                <a href='#''>¿Olvidaste tu contraseña?</a><br>
-                <a href='#''>Registrate Ahora</a><br>
-                <input name='submit' type='submit' value='Entrar' action=''>
-                &nbsp;
-                <input name='reset' type='reset' value='Limpiar'>
-
-                <br><br><br> 
-                </form>
-                </div> 
-                </div>";
-            }
-        
-        ?>
-    
-  
-  
-
-  
-
     <!-- / main body -->
     <div class="clear"></div>
   </main>
@@ -267,14 +194,7 @@ Fray Servando Teresa de Mier Núm. 127, Colonia Centro, Delegación Cuauhtémoc,
         <li><a href="#">Contacto</a></li>
       </ul>
     </div>
-    <!--<div class="one_third">
-      <h6 class="title">From The Blog</h6>
-      <article>
-        <h2 class="nospace"><a href="#">Lorem ipsum dolor</a></h2>
-        <time class="smallfont" datetime="2045-04-06">Friday, 6<sup>th</sup> April 2045</time>
-        <p>Vestibulumaccumsan egestibulum eu justo convallis augue estas aenean elit intesque sed.</p>
-      </article>
-    </div>-->
+    
     <div class="one_third">
       <h6 class="title">Recibe avisos en tu correo</h6>
       <form class="btmspace-30" method="post" action="#">
@@ -313,9 +233,11 @@ Fray Servando Teresa de Mier Núm. 127, Colonia Centro, Delegación Cuauhtémoc,
 <!-- ################################################################################################ -->
 <a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a> 
 <!-- JAVASCRIPTS -->
-<script src="layout/scripts/jquery.min.js"></script>
-<script src="layout/scripts/jquery.backtotop.js"></script>
-<script src="layout/scripts/jquery.mobilemenu.js"></script>
-<script src="layout/scripts/jquery.flexslider-min.js"></script>
+
+
+<script src="../layout/scripts/jquery.min.js"></script>
+<script src="../layout/scripts/jquery.backtotop.js"></script>
+<script src="../layout/scripts/jquery.mobilemenu.js"></script>
+<script src="../layout/scripts/jquery.flexslider-min.js"></script>
 </body>
 </html>

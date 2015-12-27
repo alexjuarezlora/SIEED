@@ -1,134 +1,85 @@
 <?php
-
-	class File{
-			public $nombre = "lineamientos.pdf";
-			public $numArchivo="";
-
-
+error_reporting(E_ERROR);
+session_start();
+?>
+<?php
 
 
-			public function setNombre($nombre){
-			$this->nombre=$nombre;
-			}
-
-			public function verificar(){
-				if ($_FILES['archivo']["error"] > 0 && $_FILES['archivo2']["error"] > 0
-					&& $_FILES['archivo3']["error"] > 0 && $_FILES['archivo4']["error"] > 0
-					&& $_FILES['archivo5']["error"] > 0 && $_FILES['archivo6']["error"] > 0){
-					echo "No eligio ningun archivo<br>";
-				}
-
-			}
-
-			public function verificaFormato($archivo){
-				$estado=false;
-
-				if ($_FILES['archivo']['type'] !='application/pdf'){
-						echo "<b>El archivo ".$_FILES['archivo']['name']." no es pdf <br>
-							  Verifique su archivo </b> <br>";
-							  $estado=true;
-					}
-					return $estado;
-			}
-
-			
+class File
+{
+    public $nombre = "lineamientos.pdf";
+    public $numArchivo = "";
 
 
-			public function saveFile(){
-				$archivo  = $_GET['archivo'];
-				$archivo2 = $_POST['archivo2'];
-				$archivo3 = $_POST['archivo3'];
-				$archivo4 = $_POST['archivo4'];
-				$archivo5 = $_POST['archivo5'];
-				$archivo6 = $_POST['archivo6'];
+    public function setNombre($nombre)
+    {
+        $this->nombre = $nombre;
+    }
 
-				if($archivo)
-				{					
-					$this->setNombre("../pdfs/lineamientos.pdf");
-					if (!$_FILES['archivo']["error"] > 0)
-  						{	
-                       		move_uploaded_file($_FILES['archivo']['tmp_name'], 
-	    					$this->nombre);
-	    					echo "Archivo: ".$_FILES['archivo']['name']." se subio exitosamente<br>";
-  						}
-					
-				}
+    public function verificar()
+    {
+        include_once("../pages/conexion.php");
+        $verifica="";
+        $conexion = new Conexion();
+        $link = $conexion->conexionBd($_SESSION['usuario'], $_SESSION['password']);
+        $result = mysql_query("SELECT * FROM archivos", $link);
+        while ($row = mysql_fetch_row($result)) {
+            $verifica=$_FILES["$row[0]"];
 
+        }
+        if($verifica>0){
+            echo "No selecciono ningun archivo";
+        }
 
-				if($archivo2){
-					
-						$this->setNombre("../pdfs/inscripcion.pdf");
-						if (!$_FILES['archivo2']["error"] > 0)
-  							{
-  								move_uploaded_file($_FILES['archivo2']['tmp_name'], 
-	    						$this->nombre);
-	    						echo "Archivo: ".$_FILES['archivo2']['name']." se subio exitosamente<br>";
-  							}
-  						
-				}
+    }
 
 
-				if($archivo3){
-					
-						$this->setNombre("../pdfs/zonas_deportivas.pdf");
-						if (!$_FILES['archivo3']["error"] > 0)
-  							{
-  								move_uploaded_file($_FILES['archivo3']['tmp_name'], 
-	    						$this->nombre);
-	    						echo "Archivo: ".$_FILES['archivo3']['name']." se subio exitosamente<br>";
-  							}	
-					
-				}
+    public function  saveFilebd()
+    {
+        include_once("../pages/conexion.php");
+        $conexion = new Conexion();
+        $link = $conexion->conexionBd($_SESSION['usuario'], $_SESSION['password']);
+        $result = mysql_query("SELECT * FROM archivos", $link);
+        while ($row = mysql_fetch_row($result)) {
+
+            $archivo = $_POST["$row[0]"];
+            if ($archivo) {
+                $this->setNombre("../pdfs/" . $row[2]);
+                if (!$_FILES["$row[0]"]["error"] > 0) {
+                    move_uploaded_file($_FILES["$row[0]"]['tmp_name'],
+                        $this->nombre);
+                    echo "Archivo: " . $_FILES["$row[0]"]['name'] . " se subio exitosamente<br>";
+                }
+
+            }
 
 
-				if($archivo4){
-					
-						$this->setNombre("../pdfs/reglamento_deportivo.pdf");
-						if (!$_FILES['archivo4']["error"] > 0)
-  							{
-  								move_uploaded_file($_FILES['archivo4']['tmp_name'], 
-	    						$this->nombre);
-	    						echo "Archivo: ".$_FILES['archivo4']['name']." se subio exitosamente<br>";
-  							}	
-					
-				}
+        }
+    }
 
+    public function actulizaNombreLink()
+    {
+        include_once("../pages/conexion.php");
+        $conexion = new Conexion();
+        $link = $conexion->conexionBd($_SESSION['usuario'], $_SESSION['password']);
+        $result= mysql_query("SELECT * FROM archivos",$link);
+        if ($link) {
+            while ($row = mysql_fetch_row($result)) {
+                $aux = $_POST["$row[0]"];
+                $aux2 = str_replace(" ","_", $aux.".pdf");
+                //echo $aux."<br>".$aux2."<br>";
+                rename("../pdfs/$row[2]","../pdfs/$aux2");
+                mysql_query("UPDATE archivos SET NOMBRE_LINK='$aux', NOMBRE_ARCHIVO='$aux2' where idARCHIVOS = '$row[0]'",$link);
+            }
+        }
+    }
 
-				if($archivo5){
-					
-						$this->setNombre("../pdfs/calendario.pdf");
-						if (!$_FILES['archivo5']["error"] > 0)
-  							{
-  								move_uploaded_file($_FILES['archivo5']['tmp_name'], 
-	    						$this->nombre);
-	    						echo "Archivo: ".$_FILES['archivo5']['name']." se subio exitosamente<br>";
-  							}	
-					
-				}
+}
 
-
-				if($archivo6){
-					
-						$this->setNombre("../pdfs/circular.pdf");
-						if (!$_FILES['archivo6']["error"] > 0)
-  							{
-  								move_uploaded_file($_FILES['archivo6']['tmp_name'], 
-	    						$this->nombre);
-	    						echo "Archivo: ".$_FILES['archivo6']['name']." se subio exitosamente<br>";
-  							}		
-					
-
-				}	
-
-			}
-		
-	}
-
-	$file = new File();
-	$file->verificar();
-	$file->saveFile();
-	header( "refresh:2; url=administracion_sistema.php" );	
-
+$file = new File();
+$file->actulizaNombreLink();
+$file->saveFilebd();
+header( "refresh:2; url=../administracion/administracion_sistema.php" );
 
 
 ?>

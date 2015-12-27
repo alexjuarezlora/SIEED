@@ -29,6 +29,9 @@ if (isset($_POST["name"]))
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="../layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
 <link rel="stylesheet" type="text/css" href="../layout/styles/fonts/deportes/flaticon.css"> 
+<script type="text/javascript">
+
+</script>
 </head>
 <body id="top">
 <!-- ################################################################################################ -->
@@ -87,121 +90,143 @@ if (isset($_POST["name"]))
     <!-- main body -->
     <!-- ################################################################################################ -->
     <div class="sidebar one_quarter first"> 
-      <!-- ################################################################################################ -->
-      <h6>Menú Principal</h6>
-      <nav class="sdb_holder">
-        <ul>
-          <li><a href="#">Inicio</a></li>
-          <li><a href="#">Lineamientos Generales</a> </li>
-          <li><a href="#">Procedimiento de inscripción</a> </li>
-          <li><a href="#">Zonas deportivas del SNEST 2015</a> </li>
-          <li><a href="#">Reglamento Deportivo</a> </li>
-          <li><a href="#">Calendario Prenacionales 2015</a> </li>
-          <li><a href="#">Circular M00.3/004/2015</a> </li>
-          <li><a href="#">Dudas o Comentarios</a> </li>
-          <li><a href="#">Descarga de documentos</a></li>
-          <li><a href="#">Salir</a></li>
-        </ul>
-      </nav>
-
-      
-        <?php
-            if (!empty($_SESSION["nombre_usuario"])) 
-                {
-                if($_SESSION["nombre_usuario"]=="tec")
-                {
-                    echo "
-                    <h6>Registro</h6>
-                    <nav class='sdb_holder'>
-                    <ul>
-                    <li><a href='#'>Autoridades</a></li>
-                    <li><a href='#'>Disciplinas</a> </li>
-                    <li><a href='#'>Registrar alumnos</a> </li>
-                    <li><a href='#'>Impresión de Tarjetones</a> </li>
-                    <li><a href='#'>Impresión de Credenciales</a> </li>
-                    <li><a href='#'>Impresión de Cédula</a> </li>
-                    <li><a href='#'>Registrar personal de Apoyo</a> </li>
-                    </ul>
-                    </nav>";
-                }
-                if($_SESSION["nombre_usuario"]=="admin")
-                {
-                    
-                    
-                    echo "    
-                    <!--Menu extra de administracion (superusuario)-->
-                    <h6>Administracion</h6>
-                    <nav class='sdb_holder'>
-                    <ul>
-                    <li><a href='#'>Administración del sistema</a></li>
-                    <li><a href='#'>Mostrar Cuenta</a> </li>
-                    <li><a href='#'>Editar Cuenta</a> </li>
-                    <li><a href='#'>Notificaciones</a> </li>
-                    <li><a href='#'>Bandeja de entrada</a> </li>
-                    <li><a href='#'>Impresión de Cédula</a> </li>
-                    <li><a href='#'>Desconectarse</a> </li>
-                    </ul>
-                    </nav>";
-                }
-                }
+      <!-- ################################################################################################ -->   
         
-        ?>
+        <?php
+      include_once("../pages/menu.php");
+      $menu = new Menu();
+      $direccion ="../pdfs/";
+      $menu->usuarioVisitante($direccion);
+      $menu->verificaUsuario();
+
+      ?>
 
      
     </div>
-    <div class="content three_quarter">
+    
+    <div class="content three_quarter"> 
     
     <ul class="nospace group">
 
           <li class="btmspace-50">
-            <article class="service largeicon"><i class="icon nobg circle fa fa-hand-o-up"></i>
-              <h6 class="heading"><a href="#"><strong>Personal de apoyo del Tecnológico de Pachuca</strong></a></h6>
-              <h1>Tabla de personal</h1>
+            <article class="service largeicon"><i class="icon nobg circle fa fa-star"></i>
+              <h6 class="heading"><a href="#">Clasificación al Nacional</a></h6>
+              <p>Aqui podrá escoger los clasificados de cada zona al evento nacional</p><br>
+
+              <div id="comments"> 
+              <form name="nuevo_clasificado" method="GET" action="nacional2.php" onsubmit="return validarClasif()">
+              <label for="selec_zona"><strong>Seleccione una zona</strong></label>
+              <select id="zona">
+                <option value="">---Seleccione una Zona---</option>
+                <option value="I">Zona I</option>
+                <option value="II">Zona II</option>
+                <option value="III">Zona III</option>
+                <option value="IV">Zona IV</option>
+                <option value="V">Zona V</option>
+                <option value="VI">Zona VI</option>
+                <option value="VI">Zona VI</option>
+                <option value="VII">Zona VII</option>
+                <option value="VIII">Zona VIII</option>
+                <option value="IX">Zona IX</option>
+                <option value="X">Zona X</option>
+                <option value="XI">Zona XI</option>
+                <option value="XII">Zona XII</option>
+                <option value="XIII">Zona XIII</option>
+                <option value="XIV">Zona XIV</option>
+                <option value="XV">Zona XV</option>
+              </select>
+              
+              <label for="disciplina"><strong>Seleccione una disciplina</strong></label>
+              <select id="disciplina">
+                <option value="">---Seleccione un documento del menu---</option>
+                <option>Futbol Varonil</option>
+                <option>Futbol Femenil</option>
+              </select><br><br>
+              <input type="submit" value="Escoger">
+              <input type="reset" value="Limpiar">
+              </form>
+              
+              </div>
+           </article><br>
+           <section id="clasificados"></section>
+           <article class="service largeicon"><i class="icon nobg circle fa fa-list-ul"></i>
+              <h6 class="heading"><a href="#">Lista de clasificados</a></h6>
+              <p>Consulta los clasificados para el nacional</p><br>
+              <div id="comments">
+              
+              <label for="selec_disciplina_tabla"><strong>Seleccione una disciplina</strong></label>
+              <select id="selec_disciplina_tabla" onchange="muestra_tabla()">
+                <option value="">---Seleccione un documento del menu---</option>
+                <option value="futbolv">Futbol Varonil</option>
+                <option value="basquetbolf">Basquetbol Femenil</option>
+              </select><br><br>
+              
+             
+              
               <div class="scrollable">
-                <table>
-                  <thead>
+                <table id="futbolv_tabla" style="display:none">
+                  <thead title="Clasificados a futbol varonil">
                     <tr>
-                      <th>Personal de apoyo</th>
-                      <th>Limite</th>
-                      <th>Personal registrado</th>
-                      <th>Registrar personal</th>
+                      <th>Institucion</th>
+                      <th>Zona</th>
+                      <th>Descalificar</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><a>Cordinador deportivo</a></td>
-                      <td>Value 2</td>
-                      <td>Value 3</td>
-                      <td align="Center"><a href="personal_apoyo_2.php" ><i class="fa fa-3x fa-pencil-square-o" ></a></i></td>
+                      <td>Instituto Tecnologico de Pachuca</a></td>
+                      <td>Zona 8</td>
+                      <td><a href="#" ><i class="fa fa-2x fa-remove"  ></a></i></td>
                     </tr>
                     <tr>
-                      <td><a>Entrenadores</a></td>
-                      <td>Value 2</td>
-                      <td>Value 3</td>
-                      <td align="Center"><a href="personal_apoyo_2.php" ><i class="fa fa-3x fa-pencil-square-o" ></a></i></td>
+                      <td>Instituto Tecnologico de Celaya</a></td>
+                      <td>Zona 3</td>
+                      <td><a href="#" ><i class="fa fa-2x fa-remove"  ></a></i></td>
                     </tr>
                     <tr>
-                      <td><a>Médicos</a></td>
-                      <td>Value 2</td>
-                      <td>Value 3</td>
-                      <td align="Center"><a href="personal_apoyo_2.php" ><i class="fa fa-3x fa-pencil-square-o" ></a></i></td>
+                      <td>Instituto Tecnologico de Leon</a></td>
+                      <td>Zona 6</td>
+                      <td><a href="#" ><i class="fa fa-2x fa-remove"  ></a></i></td>
                     </tr>
                     <tr>
-                      <td><a>Conductores</a></td>
-                      <td>Value 2</td>
-                      <td>Value 3</td>
-                      <td align="Center"><a href="personal_apoyo_2.php" ><i class="fa fa-3x fa-pencil-square-o" ></a></i></td>
+                      <td>Instituto Tecnologico de Chihuahua/a></td>
+                      <td>Zona 12</td>
+                      <td><a href="#" ><i class="fa fa-2x fa-remove"  ></a></i></td>
                     </tr>
                   </tbody>
                 </table>
-              </div>
-            </article>
-          </li>
 
+                <table id="basquetbolf_tabla" style="display:none">
+                  <thead title="Clasificados a basquetbol femenil">
+                    <tr>
+                      <th>Institucion</th>
+                      <th>Zona</th>
+                      <th>Descalificar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                    <tr>
+                      <td>Instituto Tecnologico de Celaya</a></td>
+                      <td>Zona 3</td>
+                      <td><a href="#" ><i class="fa fa-2x fa-remove"  ></a></i></td>
+                    </tr>
+                    <tr>
+                      <td>Instituto Tecnologico de Leon</a></td>
+                      <td>Zona 6</td>
+                      <td><a href="#" ><i class="fa fa-2x fa-remove"  ></a></i></td>
+                    </tr>
+                    <tr>
+                      <td>Instituto Tecnologico de Chihuahua</td>
+                      <td>Zona 12</td>
+                      <td><a href="#" ><i class="fa fa-2x fa-remove"  ></a></i></td>
+                    </tr>
+                  </tbody>
+                </table>
+                </div></div>
+           </article>
+          </li>
         </ul>
-   
-    
-        
     </div>
 
     <!-- / main body -->
@@ -236,14 +261,7 @@ Fray Servando Teresa de Mier Núm. 127, Colonia Centro, Delegación Cuauhtémoc,
         <li><a href="#">Contacto</a></li>
       </ul>
     </div>
-    <!--<div class="one_third">
-      <h6 class="title">From The Blog</h6>
-      <article>
-        <h2 class="nospace"><a href="#">Lorem ipsum dolor</a></h2>
-        <time class="smallfont" datetime="2045-04-06">Friday, 6<sup>th</sup> April 2045</time>
-        <p>Vestibulumaccumsan egestibulum eu justo convallis augue estas aenean elit intesque sed.</p>
-      </article>
-    </div>-->
+    
     <div class="one_third">
       <h6 class="title">Recibe avisos en tu correo</h6>
       <form class="btmspace-30" method="post" action="#">
@@ -277,16 +295,44 @@ Fray Servando Teresa de Mier Núm. 127, Colonia Centro, Delegación Cuauhtémoc,
     <!-- ################################################################################################ -->
   </div>
 </div>
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
-<!-- ################################################################################################ -->
+
 <a id="backtotop" href="#top"><i class="fa fa-chevron-up"></i></a> 
 <!-- JAVASCRIPTS -->
+<!--script para ocultar y desocultar tablas-->
+<script>
+function muestra_tabla(){
 
+  switch(document.getElementById("selec_disciplina_tabla").value){
+    case "":
+        document.getElementById("basquetbolf_tabla").setAttribute("style","display:none");
+        document.getElementById("futbolv_tabla").setAttribute("style","display:none");
+    break;
+    case "futbolv":
+
+        document.getElementById("basquetbolf_tabla").setAttribute("style","display:none");
+        document.getElementById("futbolv_tabla").removeAttribute("style");
+    break;
+    case "basquetbolf":
+        document.getElementById("futbolv_tabla").setAttribute("style","display:none");
+        document.getElementById("basquetbolf_tabla").removeAttribute("style");
+
+    break;
+
+  }
+
+}
+function validarClasif(){
+  if(document.getElementById("zona").value==""||document.getElementById("disciplina").value==""){
+    alert("No ha seleccionado Zona/Disciplina. Favor de revisar");
+    return false;
+  }
+}
+
+</script>
 
 <script src="../layout/scripts/jquery.min.js"></script>
 <script src="../layout/scripts/jquery.backtotop.js"></script>
 <script src="../layout/scripts/jquery.mobilemenu.js"></script>
-
+<script src="../layout/scripts/jquery.flexslider-min.js"></script>
 </body>
 </html>

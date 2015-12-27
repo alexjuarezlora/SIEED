@@ -2,13 +2,14 @@
  
 	class Conexion {
 
-		public function conexionBd(){
-			 if (!($link=mysql_connect("localhost","root","")))  
+		public function conexionBd($usuario,$pass){
+			 if (!($link=mysql_connect("localhost",$usuario,$pass)))
   				 {  
-     				 echo "Error conectando a la base de datos.";  
-      				 exit();  
+     				 echo "Usuario o Contrasena Incorrecto.";
+					 header("refresh:2; url=../index1.php");
+					 exit();
    				}  
-   			if (!mysql_select_db("prueba",$link))  
+   			if (!mysql_select_db("sieed",$link))
    				{  
       				echo "Error seleccionando la base de datos.";  
      				 exit();  
@@ -17,54 +18,8 @@
 		}
 
 
-		
 
-
-     	public function crearSesion(){
-
-     		$link = $this->conexionBd();
-			  $result = mysql_query("SELECT * FROM usuario", $link);
-    	
-        if (isset($_POST["name"])) 
-          {
-            if (isset($_POST["pass"]))
-              {
-
-                $usuario = $_POST['name'];
-                $pass = $_POST['pass'];
-
-                while ($row = mysql_fetch_row($result)) 
-                {
-                  if($row[0]==$usuario && $row[1]==$pass)
-                  {
-                  $_SESSION["nombre_usuario"] = $usuario; 
-                  header("location:../index2.php");
-                  }else{
-                    header("location:../index2.php");
-                  }
-      	        }
-              }
-    		  }
-
-
-
-		     
-     	}
-
-      public function cerrarSesion(){
-           @session_start();
-            session_unset();
-            session_destroy();
-
-      }
 
     
 	}
-	
-
-
-
-
-		
-
 ?>

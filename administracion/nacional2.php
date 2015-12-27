@@ -29,6 +29,7 @@ if (isset($_POST["name"]))
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <link href="../layout/styles/layout.css" rel="stylesheet" type="text/css" media="all">
 <link rel="stylesheet" type="text/css" href="../layout/styles/fonts/deportes/flaticon.css"> 
+
 </head>
 <body id="top">
 <!-- ################################################################################################ -->
@@ -87,123 +88,61 @@ if (isset($_POST["name"]))
     <!-- main body -->
     <!-- ################################################################################################ -->
     <div class="sidebar one_quarter first"> 
-      <!-- ################################################################################################ -->
-      <h6>Menú Principal</h6>
-      <nav class="sdb_holder">
-        <ul>
-          <li><a href="#">Inicio</a></li>
-          <li><a href="#">Lineamientos Generales</a> </li>
-          <li><a href="#">Procedimiento de inscripción</a> </li>
-          <li><a href="#">Zonas deportivas del SNEST 2015</a> </li>
-          <li><a href="#">Reglamento Deportivo</a> </li>
-          <li><a href="#">Calendario Prenacionales 2015</a> </li>
-          <li><a href="#">Circular M00.3/004/2015</a> </li>
-          <li><a href="#">Dudas o Comentarios</a> </li>
-          <li><a href="#">Descarga de documentos</a></li>
-          <li><a href="#">Salir</a></li>
-        </ul>
-      </nav>
-
-      
-        <?php
-            if (!empty($_SESSION["nombre_usuario"])) 
-                {
-                if($_SESSION["nombre_usuario"]=="tec")
-                {
-                    echo "
-                    <h6>Registro</h6>
-                    <nav class='sdb_holder'>
-                    <ul>
-                    <li><a href='#'>Autoridades</a></li>
-                    <li><a href='#'>Disciplinas</a> </li>
-                    <li><a href='#'>Registrar alumnos</a> </li>
-                    <li><a href='#'>Impresión de Tarjetones</a> </li>
-                    <li><a href='#'>Impresión de Credenciales</a> </li>
-                    <li><a href='#'>Impresión de Cédula</a> </li>
-                    <li><a href='#'>Registrar personal de Apoyo</a> </li>
-                    </ul>
-                    </nav>";
-                }
-                if($_SESSION["nombre_usuario"]=="admin")
-                {
-                    
-                    
-                    echo "    
-                    <!--Menu extra de administracion (superusuario)-->
-                    <h6>Administracion</h6>
-                    <nav class='sdb_holder'>
-                    <ul>
-                    <li><a href='#'>Administración del sistema</a></li>
-                    <li><a href='#'>Mostrar Cuenta</a> </li>
-                    <li><a href='#'>Editar Cuenta</a> </li>
-                    <li><a href='#'>Notificaciones</a> </li>
-                    <li><a href='#'>Bandeja de entrada</a> </li>
-                    <li><a href='#'>Impresión de Cédula</a> </li>
-                    <li><a href='#'>Desconectarse</a> </li>
-                    </ul>
-                    </nav>";
-                }
-                }
+      <!-- ################################################################################################ -->   
         
-        ?>
+        <?php
+      include_once("../pages/menu.php");
+      $menu = new Menu();
+      $direccion ="../pdfs/";
+      $menu->usuarioVisitante($direccion);
+      $menu->verificaUsuario();
+
+      ?>
 
      
     </div>
-    <div class="content three_quarter">
+    
+    <div class="content three_quarter"> 
     
     <ul class="nospace group">
 
           <li class="btmspace-50">
-            <article class="service largeicon"><i class="icon nobg circle fa fa-hand-o-up"></i>
-              <h6 class="heading"><a href="#"><strong>Personal de apoyo del Tecnológico de Pachuca</strong></a></h6>
-              <h1>Tabla de personal</h1>
+            <article class="service largeicon"><i class="icon nobg circle fa fa-file-pdf-o"></i>
+              <h6 class="heading"><a href="#">Clasificado al nacional</a></h6>
+              <p>Seleccione al ganador de <strong>Futbol varonil (Zona 8)</strong></p><br>
+              <div id="comments"> 
               <div class="scrollable">
-                <table>
-                  <thead>
+              <form method="POST" action="#">
+              <table id="futbolv_tabla" >
+                  <thead title="Clasificados a basquetbol femenil">
                     <tr>
-                      <th>Personal de apoyo</th>
-                      <th>Limite</th>
-                      <th>Personal registrado</th>
-                      <th>Registrar personal</th>
+                      <th>Institucion</th>
+                      <th>Ganador</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td><a>Cordinador deportivo</a></td>
-                      <td>Value 2</td>
-                      <td>Value 3</td>
-                      <td align="Center"><a href="personal_apoyo_2.php" ><i class="fa fa-3x fa-pencil-square-o" ></a></i></td>
+                      <td>Instituto Tecnologico de Celaya</a></td>
+                      <td><input id="radio1" type="radio" name="radio" value="Instituto Tecnologico de Celaya" ><label for="radio1"><span><span></span></span></label></td>
                     </tr>
                     <tr>
-                      <td><a>Entrenadores</a></td>
-                      <td>Value 2</td>
-                      <td>Value 3</td>
-                      <td align="Center"><a href="personal_apoyo_2.php" ><i class="fa fa-3x fa-pencil-square-o" ></a></i></td>
+                      <td>Instituto Tecnologico de Puebla</a></td>
+                      <td><input id="radio2"  type="radio" name="radio" value="Instituto Tecnologico de Puebla" ><label for="radio2"><span><span></span></span></label></td>
                     </tr>
                     <tr>
-                      <td><a>Médicos</a></td>
-                      <td>Value 2</td>
-                      <td>Value 3</td>
-                      <td align="Center"><a href="personal_apoyo_2.php" ><i class="fa fa-3x fa-pencil-square-o" ></a></i></td>
-                    </tr>
-                    <tr>
-                      <td><a>Conductores</a></td>
-                      <td>Value 2</td>
-                      <td>Value 3</td>
-                      <td align="Center"><a href="personal_apoyo_2.php" ><i class="fa fa-3x fa-pencil-square-o" ></a></i></td>
+                      <td>Instituto Tecnologico de Pachuca</a></td>
+                      <td><input id="radio3" type="radio" name="radio" value="Instituto Tecnologico de Pachuca" ><label for="radio3"><span><span></span></span></label></td>
                     </tr>
                   </tbody>
                 </table>
+                <input type="submit" value="Guardar Ganador">
+                </form>
+                </div>
               </div>
-            </article>
+           </article>
           </li>
-
         </ul>
-   
-    
-        
     </div>
-
     <!-- / main body -->
     <div class="clear"></div>
   </main>
@@ -236,14 +175,7 @@ Fray Servando Teresa de Mier Núm. 127, Colonia Centro, Delegación Cuauhtémoc,
         <li><a href="#">Contacto</a></li>
       </ul>
     </div>
-    <!--<div class="one_third">
-      <h6 class="title">From The Blog</h6>
-      <article>
-        <h2 class="nospace"><a href="#">Lorem ipsum dolor</a></h2>
-        <time class="smallfont" datetime="2045-04-06">Friday, 6<sup>th</sup> April 2045</time>
-        <p>Vestibulumaccumsan egestibulum eu justo convallis augue estas aenean elit intesque sed.</p>
-      </article>
-    </div>-->
+    
     <div class="one_third">
       <h6 class="title">Recibe avisos en tu correo</h6>
       <form class="btmspace-30" method="post" action="#">
@@ -287,6 +219,6 @@ Fray Servando Teresa de Mier Núm. 127, Colonia Centro, Delegación Cuauhtémoc,
 <script src="../layout/scripts/jquery.min.js"></script>
 <script src="../layout/scripts/jquery.backtotop.js"></script>
 <script src="../layout/scripts/jquery.mobilemenu.js"></script>
-
+<script src="../layout/scripts/jquery.flexslider-min.js"></script>
 </body>
 </html>
